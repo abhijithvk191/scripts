@@ -1,0 +1,33 @@
+<div class="col-sm-6">
+      <h3>CHANGE_NAME</h3>
+      <table id="CHANGE_TABLE" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>IP</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+    </div>
+
+    <script>
+    $('#CHANGE_TABLE').dataTable({
+      "paging":   false,
+      "processing": true,
+      "ajax": "/CHANGE_ROUTE",
+      "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+          if ( aData['Status'] == "DOWN" )
+          {
+          // $('td', nRow).css('background-color', 'Red');
+          $('td', nRow).css('color', 'Red');
+          }
+
+      },
+      "columns": [
+          {data: "IP"},
+          {data: "Status"},
+      ]
+    });
+    </script>
