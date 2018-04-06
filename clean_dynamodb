@@ -1,0 +1,27 @@
+import sys
+table_name=sys.argv[1]
+def delete_all_items(table_name):
+    # Deletes all items from a DynamoDB table.
+    # You need to confirm your intention by pressing Enter.
+    import boto3
+    client = boto3.client('dynamodb')
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table(table_name)
+    response = client.describe_table(TableName=table_name)
+    keys = [k['AttributeName'] for k in response['Table']['KeySchema']]
+    response = table.scan()
+    items = response['Items']
+    number_of_items = len(items)
+    print number_of_items
+    if number_of_items == 0:  # no items to delete
+        print("Table '{}' is empty.".format(table_name))
+        return
+    print("You are about to delete all ({}) items from table '{}'."
+          .format(number_of_items, table_name))
+    #input("Press Enter to continue...")
+    with table.batch_writer() as batch:
+        for item in items:
+            key_dict = {k: item[k] for k in keys}
+            print("Deleting " + str(item) + "...")
+            batch.delete_item(Key=key_dict)
+delete_all_items(table_name)
